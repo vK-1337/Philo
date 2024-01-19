@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 10:36:51 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/18 20:12:45 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/19 11:00:57 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,28 @@
 # include <stdio.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include "./libft/libft.h"
 
 typedef struct s_philo
 {
 	pthread_mutex_t	*r_fork;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*print_mutex;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
+	long long		last_meal;
+	int				nb_eat;
 	int				even;
 }					t_philo;
+
+typedef struct s_times
+{
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
+	long long		nb_eat;
+}					t_times;
 
 typedef struct s_micro
 {
@@ -40,6 +54,8 @@ long long			ft_get_ms_time(void);
 void				ft_usleep(long long time);
 void				ft_print_message(char *message, pthread_t tid,
 						t_philo *philo);
-void				ft_odd_thread(pthread_t tid, t_philo *philo);
-void				ft_even_thread(pthread_t tid, t_philo *philo);
+void				ft_odd_thread(pthread_t tid, t_philo *philo,
+						long long time_to_eat, long long time_to_sleep);
+void				ft_even_thread(pthread_t tid, t_philo *philo,
+						long long time_to_eat, long long time_to_sleep);
 #endif
