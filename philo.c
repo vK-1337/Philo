@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 10:36:26 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/19 18:58:10 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/19 23:06:08 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ void	*ft_routine(void *data)
 {
 	pthread_t	tid;
 	t_philo		*philo;
-	int			i;
 
-	i = 1;
 	tid = pthread_self();
 	philo = (t_philo *)data;
 	philo->nb_eat = 0;
@@ -113,12 +111,14 @@ int	is_dead(t_philo *philo, pthread_t tid)
 	if (philo->last_meal > 0 && ft_get_ms_time()
 		- philo->last_meal > philo->time_to_die)
 	{
+		philo->death->anyone_dead = 1;
 		pthread_mutex_lock(philo->print_mutex);
 		printf("%s|%lld|%s %s|%lu|%s %s%s%s\n", GREEN, ft_get_ms_time(), NC,
 			YELLOW, tid, NC, BLUE, "died", NC);
 		i = 0;
-		philo->death->anyone_dead = 1;
 		j = 0;
+    pthread_mutex_unlock(philo->r_fork);
+    pthread_mutex_unlock(philo->l_fork);
 		while (j++ < philo->number_of_philo)
 			pthread_join(philo->philos[j], NULL);
 		i = philo->number_of_philo;
@@ -182,7 +182,7 @@ void	*ft_solo_philo(void *data)
 		if (philo->death->anyone_dead)
 			return (pthread_mutex_unlock(philo->r_fork), NULL);
 		ft_print_message("has taken a fork", tid, philo);
-		pthread_mutex_lock(philo->l_fork);
+    pthread_mutex_lock(philo->l_fork);
 		if (philo->death->anyone_dead)
 			return (pthread_mutex_unlock(philo->r_fork),
 				pthread_mutex_unlock(philo->l_fork), NULL);
@@ -211,9 +211,7 @@ void	*ft_death_watch(void *data)
 	pthread_t	tid;
 	int			i;
 
-	int should_break ;
 	tid = pthread_self();
-	should_break = 0;
 	death = (t_death *)data;
 	ft_barrier_wait(death->barrier);
 	while (1)
@@ -271,10 +269,10 @@ int	ft_create_philo(int number, t_times *times)
 			philo_data[i].l_fork = &forks[0];
 		else
 			philo_data[i].l_fork = &forks[i + 1];
-		if (number == 1)
-			pthread_create(&philos[i], NULL, ft_solo_philo, &philo_data[i]);
-		else
-			pthread_create(&philos[i], NULL, ft_routine, &philo_data[i]);
+		// if (number == 1)
+		// 	pthread_create(&philos[i], NULL, ft_solo_philo, &philo_data[i]);
+		// else
+		pthread_create(&philos[i], NULL, ft_routine, &philo_data[i]);
 		printf("Philosopher %d created\n", i + 1);
 		i++;
 	}
@@ -311,7 +309,6 @@ int	main(int ac, char **av)
 	else
 		times.max_meals = -1;
 	ft_create_philo(ft_atoi(av[1]), &times);
-	printf("All philosophers have finished eating\n");
 	pthread_mutex_destroy(&barrier.mutex);
 	return (0);
 }

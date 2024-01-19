@@ -6,7 +6,7 @@ NAME = philo
 
 LIBFT = ./libft/libft.a
 
-CFLAGS = -Wall -Werror -Wextra -g3 -pthread
+CFLAGS = -Wall -Wextra -g3 -pthread
 LDFLAGS = -L./libft -lft
 
 # colors
