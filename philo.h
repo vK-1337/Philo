@@ -6,38 +6,71 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 10:36:51 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/19 11:00:57 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/19 18:41:10 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include "./libft/libft.h"
 # include <pthread.h>
 # include <stdio.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include "./libft/libft.h"
+
+typedef struct s_death	t_death;
+typedef struct s_philo	t_philo;
+typedef struct s_barrier	t_barrier;
+typedef struct s_times	t_times;
+typedef struct s_micro	t_micro;
+
+
+typedef struct s_barrier
+{
+	pthread_mutex_t	mutex;
+	int				counter;
+	int				total_threads;
+}					t_barrier;
 
 typedef struct s_philo
 {
 	pthread_mutex_t	*r_fork;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*print_mutex;
+	pthread_t		*philos;
+	pthread_mutex_t	*forks;
+	t_barrier		*barrier;
+	int				number_of_philo;
 	long long		time_to_die;
 	long long		time_to_eat;
 	long long		time_to_sleep;
 	long long		last_meal;
+	int				max_meals;
 	int				nb_eat;
 	int				even;
+	t_death			*death;
 }					t_philo;
+
+typedef struct s_death
+{
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	*print_mutex;
+	long long		time_to_die;
+	int				number_of_philo;
+	t_philo			*philos_data_arr;
+	pthread_t		*philos;
+	t_barrier		*barrier;
+	int				anyone_dead;
+}					t_death;
 
 typedef struct s_times
 {
 	long long		time_to_die;
 	long long		time_to_eat;
 	long long		time_to_sleep;
-	long long		nb_eat;
+	long long		max_meals;
+	t_barrier		*barrier;
 }					t_times;
 
 typedef struct s_micro
@@ -54,8 +87,10 @@ long long			ft_get_ms_time(void);
 void				ft_usleep(long long time);
 void				ft_print_message(char *message, pthread_t tid,
 						t_philo *philo);
-void				ft_odd_thread(pthread_t tid, t_philo *philo,
+void				*ft_odd_thread(pthread_t tid, t_philo *philo,
 						long long time_to_eat, long long time_to_sleep);
-void				ft_even_thread(pthread_t tid, t_philo *philo,
+void				*ft_even_thread(pthread_t tid, t_philo *philo,
 						long long time_to_eat, long long time_to_sleep);
+void				ft_barrier_wait(t_barrier *barrier);
+
 #endif
