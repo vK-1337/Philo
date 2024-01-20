@@ -6,14 +6,13 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 10:36:51 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/20 14:40:38 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/20 17:39:28 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include "./libft/libft.h"
 # include <pthread.h>
 # include <stdio.h>
 # include <sys/time.h>
@@ -36,14 +35,15 @@ typedef struct s_philo
 {
 	pthread_mutex_t			*r_fork;
 	pthread_mutex_t			*l_fork;
-  int r_fork_index;
-  int l_fork_index;
+	int						r_fork_index;
+	int						l_fork_index;
+	int						id;
 	pthread_mutex_t			*print_mutex;
 	pthread_t				*philos;
 	pthread_mutex_t			*forks;
 	t_barrier				*barrier;
 	int						number_of_philo;
-  int *forks_data;
+	int						*forks_data;
 	long long				time_to_die;
 	long long				time_to_eat;
 	long long				time_to_sleep;
@@ -79,6 +79,7 @@ typedef struct s_times
 typedef struct s_micro
 {
 	pthread_mutex_t			print_mutex;
+  pthread_mutex_t     odd_print_mutex;
 }							t_micro;
 
 # define NC "\e[0m"
@@ -88,12 +89,14 @@ typedef struct s_micro
 
 long long					ft_get_ms_time(void);
 void						ft_usleep(long long time);
-void						ft_print_message(char *message, pthread_t tid,
-								t_philo *philo);
-void						*ft_odd_thread(pthread_t tid, t_philo *philo,
+void						ft_print_message(char *message, t_philo *philo);
+void						*ft_odd_thread(t_philo *philo,
 								long long time_to_eat, long long time_to_sleep);
-void						*ft_even_thread(pthread_t tid, t_philo *philo,
+void						*ft_even_thread(t_philo *philo,
 								long long time_to_eat, long long time_to_sleep);
 void						ft_barrier_wait(t_barrier *barrier);
-int ft_has_done_eating(t_philo *philo);
+int							ft_has_done_eating(t_philo *philo);
+int							ft_atoi(const char *str);
+int							check_args(int argc, char **argv);
+
 #endif

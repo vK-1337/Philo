@@ -1,13 +1,11 @@
 SRCS = philo.c \
+			parsing.c \
 
-OBJS = $(SRCS:.c=.o) ./libft/libft.a
+OBJS = $(SRCS:.c=.o)
 
 NAME = philo
 
-LIBFT = ./libft/libft.a
-
 CFLAGS = -Wall -Wextra -g3 -pthread
-LDFLAGS = -L./libft -lft
 
 # colors
 GREEN = \033[0;32m
