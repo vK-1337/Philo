@@ -6,14 +6,13 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 10:36:51 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/20 14:40:38 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/20 16:01:06 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include "./libft/libft.h"
 # include <pthread.h>
 # include <stdio.h>
 # include <sys/time.h>
@@ -96,4 +95,6 @@ void						*ft_even_thread(pthread_t tid, t_philo *philo,
 								long long time_to_eat, long long time_to_sleep);
 void						ft_barrier_wait(t_barrier *barrier);
 int ft_has_done_eating(t_philo *philo);
+int		ft_atoi(const char *str);
+
 #endif

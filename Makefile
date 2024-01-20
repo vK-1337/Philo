@@ -1,13 +1,11 @@
 SRCS = philo.c \
+				parsing.c \
 
-OBJS = $(SRCS:.c=.o) ./libft/libft.a
+OBJS = $(SRCS:.c=.o)
 
 NAME = philo
 
-LIBFT = ./libft/libft.a
-
 CFLAGS = -Wall -Wextra -g3 -pthread
-LDFLAGS = -L./libft -lft
 
 # colors
 GREEN = \033[0;32m
@@ -20,9 +18,6 @@ $(NAME): $(OBJS)
 					|  $(YELLOW)    PHILO $(GREEN)[OK]$(NC)     |\n \
 					+---------------------+"
 
-$(LIBFT): libft
-	$(MAKE) -C ./libft
-
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o ${<:.c=.o}
 
@@ -33,12 +28,8 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-	$(MAKE) -C ./libft fclean
 
 re: fclean
 	make all
-
-libft:
-	git clone https://github.com/vK-1337/42-libft.git $@
 
 .PHONY: all clean fclean re

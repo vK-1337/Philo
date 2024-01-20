@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 15:39:27 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/20 15:42:45 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/20 15:59:19 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,16 @@ int		ft_atoi(const char *str)
   }
   return (nb * neg);
 }
+int ft_parse(char **args)
+{
+  int i;
 
+  i = 1;
+  while (args[i])
+  {
+    if (ft_atoi(args[i]) < 0)
+      return (0);
+    i++;
+  }
+  return (1);
+}

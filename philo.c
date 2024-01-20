@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 10:36:26 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/20 14:58:47 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/20 16:00:37 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,7 +345,7 @@ int	main(int ac, char **av)
 	t_times		times;
 	t_barrier	barrier;
 
-	if (ac < 5 || ac > 6)
+	if (ac < 5 || ac > 6 || !ft_parse(av))
 	{
 		printf("Usage : ./philo [nbr_of_philos] [time_to_die] [time_to_eat] [time_to_sleep]\n");
 		printf("Example : ./philo 5 800 200 200\n");
