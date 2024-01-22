@@ -1,5 +1,7 @@
 SRCS = philo.c \
 			parsing.c \
+			philo_utils.c \
+			
 
 OBJS = $(SRCS:.c=.o)
 
@@ -18,9 +20,6 @@ $(NAME): $(OBJS)
 					|  $(YELLOW)    PHILO $(GREEN)[OK]$(NC)     |\n \
 					+---------------------+"
 
-$(LIBFT): libft
-	$(MAKE) -C ./libft
-
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o ${<:.c=.o}
 
@@ -31,12 +30,8 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-	$(MAKE) -C ./libft fclean
 
 re: fclean
 	make all
-
-libft:
-	git clone https://github.com/vK-1337/42-libft.git $@
 
 .PHONY: all clean fclean re

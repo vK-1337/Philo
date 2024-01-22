@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 16:52:02 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/20 16:52:31 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/22 09:23:17 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,23 @@ int ft_atoi(const char *str)
   return (nb * sign);
 }
 
-int check_args(int argc, char **argv)
+int ft_parse_args(int ac, char **av)
 {
   int i;
 
   i = 1;
-  while (i < argc)
+  if (ac < 5 || ac > 6)
   {
-    if (ft_atoi(argv[i]) < 0)
+    printf("Wrong number of arguments\n");
+    return (0);
+  }
+  while (i < ac)
+  {
+    if (ft_atoi(av[i]) < 0)
+    {
+      printf("Wrong argument\n");
       return (0);
+    }
     i++;
   }
   return (1);

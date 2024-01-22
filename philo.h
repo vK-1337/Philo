@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/16 10:36:51 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/20 17:39:28 by vda-conc         ###   ########.fr       */
+/*   Created: 2024/01/22 09:11:17 by vda-conc          #+#    #+#             */
+/*   Updated: 2024/01/22 17:42:57 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,42 @@
 
 # include <pthread.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef struct s_death		t_death;
-typedef struct s_philo		t_philo;
 typedef struct s_barrier	t_barrier;
-typedef struct s_times		t_times;
-typedef struct s_micro		t_micro;
+typedef struct s_rules		t_rules;
+typedef struct s_philo		t_philo;
+
+typedef struct s_philo
+{
+	int						id;
+	int						nb_meals;
+	int						l_fork;
+	int						r_fork;
+	t_rules					*rules;
+	pthread_t				thread;
+	long long				last_meal;
+	int						done_eating;
+}							t_philo;
+
+typedef struct s_rules
+{
+	int						done;
+	int						nb_philo;
+	int						max_meals;
+	int						anyone_dead;
+	int						time_to_die;
+	int						time_to_eat;
+	int						time_to_sleep;
+	t_barrier				*barrier;
+	pthread_mutex_t			meal;
+	pthread_mutex_t			print;
+	t_philo					philos[250];
+	pthread_mutex_t			forks[250];
+	pthread_mutex_t			done_eating;
+}							t_rules;
 
 typedef struct s_barrier
 {
@@ -31,72 +59,23 @@ typedef struct s_barrier
 	int						total_threads;
 }							t_barrier;
 
-typedef struct s_philo
-{
-	pthread_mutex_t			*r_fork;
-	pthread_mutex_t			*l_fork;
-	int						r_fork_index;
-	int						l_fork_index;
-	int						id;
-	pthread_mutex_t			*print_mutex;
-	pthread_t				*philos;
-	pthread_mutex_t			*forks;
-	t_barrier				*barrier;
-	int						number_of_philo;
-	int						*forks_data;
-	long long				time_to_die;
-	long long				time_to_eat;
-	long long				time_to_sleep;
-	long long				last_meal;
-	int						max_meals;
-	int						nb_eat;
-	int						even;
-	t_death					*death;
-}							t_philo;
-
-typedef struct s_death
-{
-	pthread_mutex_t			*forks;
-	int						*forks_data;
-	pthread_mutex_t			*print_mutex;
-	long long				time_to_die;
-	int						number_of_philo;
-	t_philo					*philos_data_arr;
-	pthread_t				*philos;
-	t_barrier				*barrier;
-	int						anyone_dead;
-}							t_death;
-
-typedef struct s_times
-{
-	long long				time_to_die;
-	long long				time_to_eat;
-	long long				time_to_sleep;
-	long long				max_meals;
-	t_barrier				*barrier;
-}							t_times;
-
-typedef struct s_micro
-{
-	pthread_mutex_t			print_mutex;
-  pthread_mutex_t     odd_print_mutex;
-}							t_micro;
-
-# define NC "\e[0m"
-# define YELLOW "\e[1;33m"
-# define BLUE "\e[1;34m"
-# define GREEN "\e[1;32m"
-
+void						ft_usleep(long long time, t_rules *rules);
 long long					ft_get_ms_time(void);
-void						ft_usleep(long long time);
-void						ft_print_message(char *message, t_philo *philo);
-void						*ft_odd_thread(t_philo *philo,
-								long long time_to_eat, long long time_to_sleep);
-void						*ft_even_thread(t_philo *philo,
-								long long time_to_eat, long long time_to_sleep);
-void						ft_barrier_wait(t_barrier *barrier);
-int							ft_has_done_eating(t_philo *philo);
 int							ft_atoi(const char *str);
-int							check_args(int argc, char **argv);
+int							ft_parse_args(int ac, char **av);
+void						ft_launch_philo(int ac, char **av);
+void						*ft_dispatch(void *data);
+void						ft_print_message(char *message, t_philo *philo);
+void						ft_barrier_wait(t_barrier *barrier);
+void						ft_meal(t_philo *philo);
+void						ft_done_eating(t_philo *philo);
+void						ft_init_philos(t_rules *rules);
+void						ft_init_barrier(t_barrier *barrier, int nb_philo);
+void						ft_init_rules(t_rules *rules, char **av, int ac,
+								t_barrier *barrier);
+void						ft_start_simulation(t_rules *rules);
+void						ft_routine(t_philo *philo);
+void						ft_init_forks(t_rules *rules, int nbr_philo);
+void						ft_death_watch(t_rules *rules);
 
 #endif
