@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 09:11:17 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/22 16:32:38 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/22 17:42:57 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,16 +67,14 @@ void						ft_launch_philo(int ac, char **av);
 void						*ft_dispatch(void *data);
 void						ft_print_message(char *message, t_philo *philo);
 void						ft_barrier_wait(t_barrier *barrier);
-void						ft_even_meal(t_philo *philo);
-void						ft_odd_meal(t_philo *philo);
+void						ft_meal(t_philo *philo);
 void						ft_done_eating(t_philo *philo);
 void						ft_init_philos(t_rules *rules);
 void						ft_init_barrier(t_barrier *barrier, int nb_philo);
 void						ft_init_rules(t_rules *rules, char **av, int ac,
 								t_barrier *barrier);
 void						ft_start_simulation(t_rules *rules);
-void						ft_odd_routine(t_philo *philo);
-void						ft_even_routine(t_philo *philo);
+void						ft_routine(t_philo *philo);
 void						ft_init_forks(t_rules *rules, int nbr_philo);
 void						ft_death_watch(t_rules *rules);
 

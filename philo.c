@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 09:10:07 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/22 16:36:46 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/22 17:43:12 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ void *ft_dispatch(void *data)
   t_philo *philo;
 
   philo = (t_philo *)data;
-  if ((philo->id % 2) == 0)
-    ft_even_routine(philo);
-  else
-    ft_odd_routine(philo);
+  ft_barrier_wait(philo->rules->barrier);
+  if (philo->id % 2)
+    usleep(1500);
+  ft_routine(philo);
   return (NULL);
 }
 
-void ft_even_meal(t_philo *philo)
+void ft_meal(t_philo *philo)
 {
   t_rules *rules;
   rules = philo->rules;
@@ -59,30 +59,13 @@ void ft_even_meal(t_philo *philo)
   pthread_mutex_unlock(&(philo->rules->forks[philo->r_fork]));
   pthread_mutex_unlock(&(philo->rules->forks[philo->l_fork]));
 }
-void ft_odd_meal(t_philo *philo)
-{
-  t_rules *rules;
 
-  rules = philo->rules;
-  pthread_mutex_lock(&(rules->forks[philo->l_fork]));
-  ft_print_message("has taken a fork", philo);
-  pthread_mutex_lock(&(rules->forks[philo->r_fork]));
-  ft_print_message("has taken a fork", philo);
-  pthread_mutex_lock(&(rules->meal));
-  ft_print_message("is eating", philo);
-  philo->last_meal = ft_get_ms_time();
-  pthread_mutex_unlock(&(rules->meal));
-  philo->nb_meals++;
-  pthread_mutex_unlock(&(rules->forks[philo->l_fork]));
-  pthread_mutex_unlock(&(rules->forks[philo->r_fork]));
-}
-void ft_even_routine(t_philo *philo)
+void ft_routine(t_philo *philo)
 {
-  ft_barrier_wait(philo->rules->barrier);
   philo->last_meal = ft_get_ms_time();
   while (!philo->rules->anyone_dead)
   {
-    ft_even_meal(philo);
+    ft_meal(philo);
     if (philo->nb_meals == philo->rules->max_meals)
     {
       ft_done_eating(philo);
@@ -94,23 +77,6 @@ void ft_even_routine(t_philo *philo)
   }
 }
 
-void ft_odd_routine(t_philo *philo)
-{
-  ft_barrier_wait(philo->rules->barrier);
-  philo->last_meal = ft_get_ms_time();
-  while (!philo->rules->anyone_dead)
-  {
-    ft_odd_meal(philo);
-    if (philo->nb_meals == philo->rules->max_meals)
-    {
-      ft_done_eating(philo);
-      break;
-    }
-    ft_print_message("is sleeping", philo);
-    ft_usleep(philo->rules->time_to_sleep, philo->rules);
-    ft_print_message("is thinking", philo);
-  }
-}
 
 void ft_done_eating(t_philo *philo)
 {
@@ -196,21 +162,27 @@ void ft_death_watch(t_rules *rules)
   int i;
 
   ft_barrier_wait(rules->barrier);
-  ft_usleep(1000, rules);
+  ft_usleep(1500, rules);
   while (!rules->anyone_dead && rules->done != rules->nb_philo)
   {
     i = 0;
     while (i < rules->nb_philo)
     {
+      pthread_mutex_lock(&rules->meal);
       if (((ft_get_ms_time() - rules->philos[i].last_meal) > rules->time_to_die) && !(rules->philos[i].done_eating))
       {
         ft_print_message("died", &rules->philos[i]);
         rules->anyone_dead = 1;
         break;
       }
+      pthread_mutex_unlock(&rules->meal);
       i++;
     }
   }
   if (rules->done == rules->nb_philo)
-    printf("All done eating");
+  {
+    pthread_mutex_lock(&rules->print);
+    printf("Everyone ate %d times\n", rules->max_meals);
+    pthread_mutex_unlock(&rules->print);
+  }
 }
