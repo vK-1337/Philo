@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 09:26:52 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/22 10:40:51 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/22 15:27:25 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_barrier_wait(t_barrier *barrier)
 	barrier->counter++;
 	pthread_mutex_unlock(&barrier->mutex);
 	while (barrier->counter < barrier->total_threads)
-		usleep(100);
+		usleep(10);
 }
 
 void	ft_print_message(char *message, t_philo *philo)
