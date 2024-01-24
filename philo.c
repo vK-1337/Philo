@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 14:48:28 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/24 19:12:15 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/24 22:59:55 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ void ft_finish_dinner(t_table *table)
 
   i = -1;
   while (++i < table->philo_nb)
+  {
+    pthread_mutex_destroy(&table->philos[i].philo_mtx);
     pthread_mutex_destroy(&table->forks[i].fork);
+  }
   pthread_mutex_destroy(&table->table_mtx);
   pthread_mutex_destroy(&table->write_mtx);
   free(table->philos);
@@ -53,6 +56,7 @@ void	ft_start_dinner(t_table *table)
 	i = -1;
 	while (++i < table->philo_nb)
 		pthread_join(table->philos[i].thread, NULL);
+  ft_set_int(&table->table_mtx, &table->end_simulation, 1);
   pthread_join(table->reaper, NULL);
 }
 
