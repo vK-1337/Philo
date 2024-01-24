@@ -5,184 +5,271 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/22 09:10:07 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/22 17:43:12 by vda-conc         ###   ########.fr       */
+/*   Created: 2024/01/24 14:48:28 by vda-conc          #+#    #+#             */
+/*   Updated: 2024/01/24 19:12:15 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int main(int ac, char **av)
+void	ft_philo(t_table *table)
 {
-  if (!ft_parse_args(ac, av))
-    return (0);
-  ft_launch_philo(ac, av);
+	ft_data_init(table);
+	ft_start_dinner(table);
+  ft_finish_dinner(table);
 }
 
-void ft_launch_philo(int ac, char **av)
+void ft_finish_dinner(t_table *table)
 {
-  t_rules rules;
-  t_barrier barrier;
+  int i;
 
-  ft_init_rules(&rules, av, ac, &barrier);
-  ft_init_barrier(&barrier, rules.nb_philo);
-  ft_init_philos(&rules);
-  ft_start_simulation(&rules);
+  i = -1;
+  while (++i < table->philo_nb)
+    pthread_mutex_destroy(&table->forks[i].fork);
+  pthread_mutex_destroy(&table->table_mtx);
+  pthread_mutex_destroy(&table->write_mtx);
+  free(table->philos);
+  free(table->forks);
 }
 
-void *ft_dispatch(void *data)
+void	ft_start_dinner(t_table *table)
+{
+	int	i;
+
+	i = -1;
+	if (table->max_meals == 0)
+		return ;
+	else if (table->philo_nb == 1)
+		pthread_create(&table->philos[0].thread, NULL, ft_solo_dinner, &table->philos[0]);
+	else
+	{
+		while (++i < table->philo_nb)
+			pthread_create(&table->philos[i].thread, NULL, ft_dinner,
+				&table->philos[i]);
+	}
+  pthread_create(&table->reaper, NULL, ft_reaper, table);
+	table->start_time = ft_get_time(MILLISECOND);
+	ft_set_int(&table->table_mtx, &table->all_ready, 1);
+	i = -1;
+	while (++i < table->philo_nb)
+		pthread_join(table->philos[i].thread, NULL);
+  pthread_join(table->reaper, NULL);
+}
+
+int	ft_philo_dead(t_philo *philo)
+{
+	long	elapsed_time;
+	long	t_to_die;
+
+	if (ft_get_int(&philo->philo_mtx, &philo->full) == 1)
+		return (0);
+	elapsed_time = ft_get_time(MILLISECOND) - get_long(&philo->philo_mtx,
+			&philo->last_meal);
+	t_to_die = philo->table->t_to_die / 1000;
+	if (elapsed_time > t_to_die)
+	  return (1);
+	return (0);
+}
+
+void *ft_solo_dinner(void *data)
 {
   t_philo *philo;
 
-  philo = (t_philo *)data;
-  ft_barrier_wait(philo->rules->barrier);
-  if (philo->id % 2)
-    usleep(1500);
-  ft_routine(philo);
+  philo = (t_philo*)data;
+  ft_wait_all_threads(philo->table);
+  ft_set_long(&philo->philo_mtx, &philo->last_meal, ft_get_time(MILLISECOND));
+  ft_incr_int(&philo->table->table_mtx, &philo->table->threads_running);
+  ft_write(TAKE_FIRST_FORK, philo);
+  while (!simulation_finished(philo->table))
+    usleep(42);
   return (NULL);
 }
 
-void ft_meal(t_philo *philo)
+void	*ft_reaper(void *data)
 {
-  t_rules *rules;
-  rules = philo->rules;
-  pthread_mutex_lock(&(rules->forks[philo->r_fork]));
-  ft_print_message("has taken a fork", philo);
-  pthread_mutex_lock(&(rules->forks[philo->l_fork]));
-  ft_print_message("has taken a fork", philo);
-  pthread_mutex_lock(&(rules->meal));
-  ft_print_message("is eating", philo);
-  philo->last_meal = ft_get_ms_time();
-  pthread_mutex_unlock(&(rules->meal));
-  ft_usleep(philo->rules->time_to_eat, philo->rules);
-  philo->nb_meals++;
-  pthread_mutex_unlock(&(philo->rules->forks[philo->r_fork]));
-  pthread_mutex_unlock(&(philo->rules->forks[philo->l_fork]));
-}
+	int		i;
+	t_table	*table;
 
-void ft_routine(t_philo *philo)
-{
-  philo->last_meal = ft_get_ms_time();
-  while (!philo->rules->anyone_dead)
+	table = (t_table *)data;
+	while (!all_threads_running(&table->table_mtx, &table->threads_running,
+			table->philo_nb))
+      ;
+  while (!simulation_finished(table))
   {
-    ft_meal(philo);
-    if (philo->nb_meals == philo->rules->max_meals)
-    {
-      ft_done_eating(philo);
-      break;
-    }
-    ft_print_message("is sleeping", philo);
-    ft_usleep(philo->rules->time_to_sleep, philo->rules);
-    ft_print_message("is thinking", philo);
-  }
-}
-
-
-void ft_done_eating(t_philo *philo)
-{
-  pthread_mutex_lock(&philo->rules->done_eating);
-  philo->rules->done++;
-  philo->done_eating = 1;
-  pthread_mutex_unlock(&philo->rules->done_eating);
-}
-
-void ft_start_simulation(t_rules *rules)
-{
-  int i;
-
-  i = 0;
-  while (i < rules->nb_philo)
-  {
-    pthread_create(&rules->philos->thread, NULL, ft_dispatch, &rules->philos[i]);
-    i++;
-  }
-  ft_death_watch(rules);
-}
-
-void ft_init_philos(t_rules *rules)
-{
-  int i;
-
-  i = 0;
-  while (i < rules->nb_philo)
-  {
-    rules->philos[i].id = i + 1;
-    rules->philos[i].rules = rules;
-    rules->philos[i].r_fork = i;
-    if (i + 1 == rules->nb_philo)
-    {
-      rules->philos[i].l_fork = 0;
-    }
-    else
-      rules->philos[i].l_fork = i + 1;
-    rules->philos[i].nb_meals = 0;
-    rules->philos[i].done_eating = 0;
-    i++;
-  }
-}
-
-void ft_init_barrier(t_barrier *barrier, int nb_philo)
-{
-  barrier->counter = 0;
-  barrier->total_threads = nb_philo + 1;
-  pthread_mutex_init(&barrier->mutex, NULL);
-}
-
-void ft_init_rules(t_rules *rules, char **av, int ac, t_barrier *barrier)
-{
-  rules->nb_philo = ft_atoi(av[1]);
-  rules->time_to_die = ft_atoi(av[2]);
-  rules->time_to_eat = ft_atoi(av[3]);
-  rules->time_to_sleep = ft_atoi(av[4]);
-  if (ac == 6)
-    rules->max_meals = ft_atoi(av[5]);
-  else
-    rules->max_meals = -1;
-  rules->barrier = barrier;
-  rules->anyone_dead = 0;
-  ft_init_forks(rules, ft_atoi(av[1]));
-  pthread_mutex_init(&rules->print, NULL);
-  pthread_mutex_init(&rules->meal, NULL);
-}
-
-void ft_init_forks(t_rules *rules, int nbr_philo)
-{
-  int i;
-
-  i = 0;
-  while (i < nbr_philo)
-  {
-    pthread_mutex_init(&rules->forks[i], NULL);
-    i++;
-  }
-}
-
-void ft_death_watch(t_rules *rules)
-{
-  int i;
-
-  ft_barrier_wait(rules->barrier);
-  ft_usleep(1500, rules);
-  while (!rules->anyone_dead && rules->done != rules->nb_philo)
-  {
-    i = 0;
-    while (i < rules->nb_philo)
-    {
-      pthread_mutex_lock(&rules->meal);
-      if (((ft_get_ms_time() - rules->philos[i].last_meal) > rules->time_to_die) && !(rules->philos[i].done_eating))
+    i = -1;
+    while (++i < table->philo_nb && !simulation_finished(table))
+      if (ft_philo_dead(&table->philos[i]))
       {
-        ft_print_message("died", &rules->philos[i]);
-        rules->anyone_dead = 1;
-        break;
+        ft_set_int(&table->table_mtx, &table->end_simulation, 1);
+        ft_write(DIED, &table->philos[i]);
       }
-      pthread_mutex_unlock(&rules->meal);
-      i++;
-    }
   }
-  if (rules->done == rules->nb_philo)
-  {
-    pthread_mutex_lock(&rules->print);
-    printf("Everyone ate %d times\n", rules->max_meals);
-    pthread_mutex_unlock(&rules->print);
-  }
+  return (NULL);
+}
+
+int	all_threads_running(t_mtx *mutex, int *threads, int philo_nbr)
+{
+	int	ret;
+
+	ret = 0;
+	pthread_mutex_lock(mutex);
+	if (*threads == philo_nbr)
+		ret = 1;
+	pthread_mutex_unlock(mutex);
+	return (ret);
+}
+void	*ft_dinner(void *data)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	ft_wait_all_threads(philo->table);
+  ft_set_long(&philo->philo_mtx, &philo->last_meal, ft_get_time(MILLISECOND));
+	ft_incr_int(&philo->table->table_mtx, &philo->table->threads_running);
+	while (!simulation_finished(philo->table))
+	{
+		if (philo->full)
+			break ;
+		ft_eat(philo);
+		ft_write(SLEEPING, philo);
+		ft_sleep(philo->table->t_to_sleep, philo->table);
+		ft_think(philo);
+	}
+	return (NULL);
+}
+
+void	ft_think(t_philo *philo)
+{
+	ft_write(THINKING, philo);
+}
+
+void	ft_write(t_states status, t_philo *philo)
+{
+	long	elapsed_time;
+
+	elapsed_time = ft_get_time(MILLISECOND) - philo->table->start_time;
+	if (philo->full)
+		return ;
+	pthread_mutex_lock(&philo->table->write_mtx);
+	if ((status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
+		&& !simulation_finished(philo->table))
+		printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
+	else if (status == EATING && !simulation_finished(philo->table))
+		printf("%ld %d is eating\n", elapsed_time, philo->id);
+	else if (status == SLEEPING && !simulation_finished(philo->table))
+		printf("%ld %d is sleeping\n", elapsed_time, philo->id);
+	else if (status == THINKING && !simulation_finished(philo->table))
+		printf("%ld %d is thinking\n", elapsed_time, philo->id);
+	else if (status == DIED)
+		printf("%ld %d died\n", elapsed_time, philo->id);
+	pthread_mutex_unlock(&philo->table->write_mtx);
+}
+
+void	ft_eat(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->first_fork->fork);
+	ft_write(TAKE_FIRST_FORK, philo);
+	pthread_mutex_lock(&philo->second_fork->fork);
+	ft_write(TAKE_SECOND_FORK, philo);
+	ft_set_long(&philo->philo_mtx, &philo->last_meal, ft_get_time(MILLISECOND));
+	philo->meals_counter++;
+	ft_write(EATING, philo);
+	ft_sleep(philo->table->t_to_eat, philo->table);
+	if (philo->table->max_meals > 0
+		&& philo->meals_counter == philo->table->max_meals)
+		ft_set_int(&philo->philo_mtx, &philo->full, 1);
+	pthread_mutex_unlock(&philo->first_fork->fork);
+	pthread_mutex_unlock(&philo->second_fork->fork);
+}
+
+void	ft_wait_all_threads(t_table *table)
+{
+	while (!ft_get_int(&table->table_mtx, &table->all_ready))
+		;
+}
+
+int	ft_get_int(t_mtx *mtx, int *value)
+{
+	int	ret;
+
+	pthread_mutex_lock(mtx);
+	ret = *value;
+	pthread_mutex_unlock(mtx);
+	return (ret);
+}
+
+int	simulation_finished(t_table *table)
+{
+	return (ft_get_int(&table->table_mtx, &table->end_simulation));
+}
+
+long	get_long(t_mtx *mtx, long *value)
+{
+	long	ret;
+
+	pthread_mutex_lock(mtx);
+	ret = *value;
+	pthread_mutex_unlock(mtx);
+	return (ret);
+}
+void	ft_data_init(t_table *table)
+{
+	int	i;
+
+	i = -1;
+	table->all_ready = 0;
+	table->end_simulation = 0;
+  table->threads_running = 0;
+	table->philos = ft_safe_malloc(table->philo_nb * sizeof(t_philo));
+	table->forks = ft_safe_malloc(table->philo_nb * sizeof(t_fork));
+	pthread_mutex_init(&table->table_mtx, NULL);
+	pthread_mutex_init(&table->write_mtx, NULL);
+	while (++i < table->philo_nb)
+	{
+		pthread_mutex_init(&table->forks[i].fork, NULL);
+		table->forks[i].fork_id = i;
+	}
+	ft_philo_init(table);
+}
+
+void	ft_philo_init(t_table *table)
+{
+	int		i;
+	t_philo	*philo;
+
+	i = -1;
+	while (++i < table->philo_nb)
+	{
+		philo = table->philos + i;
+		philo->id = i + 1;
+		philo->meals_counter = 0;
+		philo->full = 0;
+		philo->table = table;
+		pthread_mutex_init(&philo->philo_mtx, NULL);
+		ft_assign_forks(philo, table->forks, i);
+	}
+}
+
+void	ft_assign_forks(t_philo *philo, t_fork *forks, int philo_pos)
+{
+	int	philo_nb;
+
+	philo_nb = philo->table->philo_nb;
+	philo->first_fork = &forks[(philo_pos + 1) % philo_nb];
+	philo->second_fork = &forks[philo_pos];
+	if (philo->id % 2 == 0)
+	{
+		philo->first_fork = &forks[philo_pos];
+		philo->second_fork = &forks[(philo_pos + 1) % philo_nb];
+	}
+}
+
+void	*ft_safe_malloc(size_t bytes)
+{
+	void *ptr;
+
+	ptr = malloc(bytes);
+	if (!ptr)
+		ft_error_exit("Error: malloc failed\n");
+	return (ptr);
 }

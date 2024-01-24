@@ -5,48 +5,69 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/22 09:26:52 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/22 16:46:50 by vda-conc         ###   ########.fr       */
+/*   Created: 2024/01/24 15:14:44 by vda-conc          #+#    #+#             */
+/*   Updated: 2024/01/24 17:43:53 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_usleep(long long time, t_rules *rules)
+void ft_sleep(long usec, t_table *table)
 {
-	long long	start;
-
-	start = ft_get_ms_time();
-  while (!(rules->anyone_dead))
+  long start_time;
+  long elapsed_time;
+  long remaining_time;
+  start_time = ft_get_time(MICROSECOND);
+  while (ft_get_time(MICROSECOND) - start_time <= usec)
   {
-	  if (ft_get_ms_time() - start > time)
-      break ;
-	  usleep(50);
+    if (table->end_simulation)
+      break;
+    elapsed_time = ft_get_time(MICROSECOND) - start_time;
+    remaining_time = usec - elapsed_time;
+    if (remaining_time > 1e3)
+      usleep(remaining_time / 2);
+    else
+    {
+      while (ft_get_time(MICROSECOND) - start_time <= usec)
+        ;
+    }
   }
 }
 
-long long	ft_get_ms_time(void)
+long ft_get_time(t_time_code time_code)
 {
-	struct timeval	tv;
+  struct timeval tv;
 
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+  if(gettimeofday(&tv, NULL))
+    ft_error_exit("gettimeofday failed");
+  if (time_code == SECOND)
+    return (tv.tv_sec + (tv.tv_usec / 1e6));
+  else if (time_code == MILLISECOND)
+    return (tv.tv_sec * 1e3 + (tv.tv_usec / 1e3));
+  else if (time_code == MICROSECOND)
+    return (tv.tv_sec * 1e6 + tv.tv_usec);
+  else
+    ft_error_exit("Wrong time_code");
+  return (1337);
 }
 
-void	ft_barrier_wait(t_barrier *barrier)
+void ft_set_int(t_mtx *mtx, int *dest, int value)
 {
-	pthread_mutex_lock(&barrier->mutex);
-	barrier->counter++;
-	pthread_mutex_unlock(&barrier->mutex);
-	while (barrier->counter < barrier->total_threads)
-		usleep(10);
+  pthread_mutex_lock(mtx);
+  *dest = value;
+  pthread_mutex_unlock(mtx);
 }
 
-void	ft_print_message(char *message, t_philo *philo)
+void ft_set_long(t_mtx *mtx, long *dest, long value)
 {
-	pthread_mutex_lock(&philo->rules->print);
-	printf("%lld", ft_get_ms_time());
-  printf(" %d", philo->id);
-  printf(" %s\n", message);
-	pthread_mutex_unlock(&philo->rules->print);
+  pthread_mutex_lock(mtx);
+  *dest = value;
+  pthread_mutex_unlock(mtx);
+}
+
+void ft_incr_int(t_mtx *mtx, int *dest)
+{
+  pthread_mutex_lock(mtx);
+  (*dest)++;
+  pthread_mutex_unlock(mtx);
 }

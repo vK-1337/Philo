@@ -1,13 +1,14 @@
-SRCS = philo.c \
-			parsing.c \
+SRCS = parsing.c \
+			main.c \
+			parsing_utils.c \
+			philo.c \
 			philo_utils.c \
-			
 
 OBJS = $(SRCS:.c=.o)
 
 NAME = philo
 
-CFLAGS = -Wall -Wextra -g3 -pthread
+CFLAGS = -Wall -Wextra -Werror -g3 -pthread
 
 # colors
 GREEN = \033[0;32m
