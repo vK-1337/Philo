@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:14:38 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/26 22:02:59 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/27 17:07:04 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	ft_starting_desynchro(t_philo *philo)
 	if (philo->philo_nb % 2 == 0)
 	{
 		if (philo->id % 2 == 0)
-			ft_sleep(3e3, philo);
+			ft_sleep(3e4, philo);
 	}
 	else
 	{
@@ -80,34 +80,17 @@ void	ft_write(t_states status, t_philo *philo)
 		return ;
 	sem_wait(philo->micro);
   if (ft_get_int(philo->philo_sem, &philo->end_simulation))
-    exit(0);
+    return;
 	else if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
-  {
-    if (ft_get_int(philo->philo_sem, &philo->end_simulation))
-      exit(0);
 		printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
-  }
 	else if (status == EATING)
-  {
-    if (ft_get_int(philo->philo_sem, &philo->end_simulation))
-      exit(0);
 		printf("%ld %d is eating\n", elapsed_time, philo->id);
-  }
 	else if (status == SLEEPING)
-  {
-    if (ft_get_int(philo->philo_sem, &philo->end_simulation))
-      exit(0);
 		printf("%ld %d is sleeping\n", elapsed_time, philo->id);
-  }
 	else if (status == THINKING)
-  {
-    if (ft_get_int(philo->philo_sem, &philo->end_simulation))
-      exit(0);
 		printf("%ld %d is thinking\n", elapsed_time, philo->id);
-  }
 	else if (status == DIED)
-	{
   	printf("%ld %d died\n", elapsed_time, philo->id);
-  }
-	sem_post(philo->micro);
+  if (status != DIED)
+	  sem_post(philo->micro);
 }

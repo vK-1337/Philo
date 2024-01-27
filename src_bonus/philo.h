@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:12:10 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/26 21:54:36 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/27 18:22:05 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define FORKS "/forks_semaphore"
 # define SYNC "/sync_semaphore"
 # define PHILO_SEM "/philo_semaphore"
+# define KILL_THEM_ALL "/all_dead_semaphore"
+# define START "/start_semaphore"
 
 //        TYPEDEF       //
 
@@ -56,6 +58,9 @@ typedef struct s_table
 	sem_t	*forks;
 	sem_t	*sync_sem;
   int philo_id;
+  pid_t *children;
+  sem_t *kill_them_all;
+  sem_t *start_sem;
 }			t_table;
 
 typedef struct s_philo
@@ -65,7 +70,7 @@ typedef struct s_philo
 	long	t_to_sleep;
 	long	last_meal;
 	int		end_simulation;
-	int max_meals;
+  int max_meals;
   int meal_counter;
   int thread_rdy;
   int		philo_nb;
@@ -75,6 +80,9 @@ typedef struct s_philo
 	sem_t	*forks;
 	sem_t	*micro;
 	sem_t	*philo_sem;
+  sem_t *sync_sem;
+	t_table *table;
+  sem_t *start_sem;
 }			t_philo;
 
 typedef enum e_time_code
@@ -86,7 +94,7 @@ typedef enum e_time_code
 
 void	ft_philo(t_table *table);
 void ft_dinner(t_table *table);
-void *ft_routine(void *data);
+void ft_routine(void *data);
 void ft_eat(t_philo *philo);
 void	ft_error_exit(const char *error);
 void ft_sleep(long usec, t_philo *philo);
@@ -105,6 +113,7 @@ int ft_is_space(const char c);
 int ft_is_digit(const char c);
 long ft_atol(const char *str);
 const char *ft_valid_input(const char *str);
-void	ft_reaper(t_table *table, t_philo *philo);
+void	*ft_reaper(void *data);
 void	ft_think(t_philo *philo, int before_simulation);
+void ft_kill_them_all(t_table *table);
 #endif
