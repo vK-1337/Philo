@@ -1,27 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setters.c                                          :+:      :+:    :+:   */
+/*   getters.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 14:57:42 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 09:58:44 by vda-conc         ###   ########.fr       */
+/*   Created: 2024/01/28 14:27:01 by vda-conc          #+#    #+#             */
+/*   Updated: 2024/01/28 14:30:06 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_set_long(sem_t *semaphore, long *dest, long value)
+int	ft_get_int(t_mtx *mtx, int *value)
 {
-	sem_wait(semaphore);
-	*dest = value;
-	sem_post(semaphore);
+	int	ret;
+
+	pthread_mutex_lock(mtx);
+	ret = *value;
+	pthread_mutex_unlock(mtx);
+	return (ret);
 }
 
-void	ft_set_int(sem_t *semaphore, int *dest, int value)
+int	simulation_finished(t_table *table)
 {
-	sem_wait(semaphore);
-	*dest = value;
-	sem_post(semaphore);
+	return (ft_get_int(&table->table_mtx, &table->end_simulation));
+}
+
+long	get_long(t_mtx *mtx, long *value)
+{
+	long	ret;
+
+	pthread_mutex_lock(mtx);
+	ret = *value;
+	pthread_mutex_unlock(mtx);
+	return (ret);
 }

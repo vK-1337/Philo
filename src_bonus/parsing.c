@@ -6,13 +6,13 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:27:38 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/26 19:02:42 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/28 14:19:21 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_parse_input(int ac, char **av, t_table *table)
+void	ft_parse_input(char **av, t_table *table)
 {
 	table->philo_nb = ft_atol(av[1]);
 	table->t_to_die = ft_atol(av[2]) * 1e3;

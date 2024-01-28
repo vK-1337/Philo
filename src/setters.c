@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   setters.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/24 11:48:56 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/24 14:47:59 by vda-conc         ###   ########.fr       */
+/*   Created: 2024/01/28 14:24:50 by vda-conc          #+#    #+#             */
+/*   Updated: 2024/01/28 14:29:54 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int main(int ac, char **av)
+void	ft_set_int(t_mtx *mtx, int *dest, int value)
 {
-  t_table dinner_table;
+	pthread_mutex_lock(mtx);
+	*dest = value;
+	pthread_mutex_unlock(mtx);
+}
 
-  if ((ac != 6) && (ac != 5))
-    ft_error_exit("Wrong number of arguments");
-  else
-    ft_parse_input(&dinner_table, av);
-  ft_philo(&dinner_table);
+void	ft_set_long(t_mtx *mtx, long *dest, long value)
+{
+	pthread_mutex_lock(mtx);
+	*dest = value;
+	pthread_mutex_unlock(mtx);
+}
+
+void	ft_incr_int(t_mtx *mtx, int *dest)
+{
+	pthread_mutex_lock(mtx);
+	(*dest)++;
+	pthread_mutex_unlock(mtx);
 }

@@ -5,18 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 11:14:38 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 12:49:53 by vda-conc         ###   ########.fr       */
+/*   Created: 2024/01/24 15:14:44 by vda-conc          #+#    #+#             */
+/*   Updated: 2024/01/28 14:29:49 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	ft_error_exit(const char *error)
-{
-	printf("%s", error);
-	exit(1);
-}
 
 long	ft_get_time(t_time_code time_code)
 {
@@ -35,30 +29,66 @@ long	ft_get_time(t_time_code time_code)
 	return (1337);
 }
 
+int	ft_all_ate(t_table *table)
+{
+	int	i;
+	int	counter;
+
+	i = -1;
+	counter = 0;
+	while (++i < table->philo_nb)
+	{
+		if (ft_get_int(&table->table_mtx, &table->philos[i].full))
+			counter++;
+	}
+	if (counter == ft_get_int(&table->table_mtx, &table->philo_nb))
+		return (1);
+	return (0);
+}
+
+int	all_threads_running(t_mtx *mutex, int *threads, int philo_nbr)
+{
+	int	ret;
+
+	ret = 0;
+	pthread_mutex_lock(mutex);
+	if (*threads == philo_nbr)
+		ret = 1;
+	pthread_mutex_unlock(mutex);
+	return (ret);
+}
+
+void	*ft_dinner(void *data)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	ft_wait_all_threads(philo->table);
+	ft_set_long(&philo->philo_mtx, &philo->last_meal, ft_get_time(MILLISECOND));
+	ft_incr_int(&philo->table->table_mtx, &philo->table->threads_running);
+	ft_starting_desynchro(philo);
+	while (!simulation_finished(philo->table))
+	{
+		if (philo->full)
+			break ;
+		ft_eat(philo);
+		ft_write(SLEEPING, philo);
+		ft_sleep(philo->table->t_to_sleep, philo->table);
+		ft_think(philo, 0);
+	}
+	return (NULL);
+}
+
 void	ft_starting_desynchro(t_philo *philo)
 {
-	if (philo->philo_nb % 2 == 0)
+	if (philo->table->philo_nb % 2 == 0)
 	{
 		if (philo->id % 2 == 0)
-			ft_sleep(1e4, philo);
+			ft_sleep(3e4, philo->table);
 	}
 	else
 	{
 		if (philo->id % 2)
 			ft_think(philo, 1);
 	}
-}
-
-void	ft_clean_exit(t_table *table)
-{
-	sem_close(table->micro);
-	sem_close(table->forks);
-	sem_close(table->sync_sem);
-	sem_close(table->kill_them_all);
-	sem_close(table->start_sem);
-	sem_unlink(FORKS);
-	sem_unlink(PRINT_SEM);
-	sem_unlink(SYNC);
-	sem_unlink(KILL_THEM_ALL);
-	sem_unlink(START);
 }

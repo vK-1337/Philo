@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setters.c                                          :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 14:57:42 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 09:58:44 by vda-conc         ###   ########.fr       */
+/*   Created: 2024/01/24 11:48:56 by vda-conc          #+#    #+#             */
+/*   Updated: 2024/01/28 14:18:35 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_set_long(sem_t *semaphore, long *dest, long value)
+int	main(int ac, char **av)
 {
-	sem_wait(semaphore);
-	*dest = value;
-	sem_post(semaphore);
-}
+	t_table	dinner_table;
 
-void	ft_set_int(sem_t *semaphore, int *dest, int value)
-{
-	sem_wait(semaphore);
-	*dest = value;
-	sem_post(semaphore);
+	if ((ac != 6) && (ac != 5))
+		ft_error_exit("Wrong number of arguments");
+	else
+		ft_parse_input(&dinner_table, av);
+	ft_philo(&dinner_table);
 }

@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:27:28 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/27 18:22:35 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/28 10:11:59 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_sem_init(t_table *table)
 	sem_unlink(PRINT_SEM);
 	sem_unlink(SYNC);
 	sem_unlink(KILL_THEM_ALL);
-  sem_unlink(START);
+	sem_unlink(START);
 	table->micro = sem_open("print_semaphore", O_CREAT, 0644, 1);
 	if (table->micro == SEM_FAILED)
 		ft_error_exit("Erreur lors de la création du sémaphore micro\n");
@@ -31,7 +31,7 @@ void	ft_sem_init(t_table *table)
 	table->kill_them_all = sem_open(KILL_THEM_ALL, O_CREAT, 0644, 0);
 	if (table->kill_them_all == SEM_FAILED)
 		ft_error_exit("Erreur lors de la création du sémaphore kill_them_all\n");
-  table->start_sem = sem_open(START, O_CREAT, 0644, 1);
+	table->start_sem = sem_open(START, O_CREAT, 0644, 1);
 	if (table->sync_sem == SEM_FAILED)
 		ft_error_exit("Erreur lors de la création du sémaphore start\n");
 }
@@ -50,7 +50,7 @@ void	ft_init_philo(t_philo *philo, t_table *table)
 	philo->max_meals = table->max_meals;
 	philo->full = 0;
 	philo->id = table->philo_id;
-  philo->start_sem = table->start_sem;
+	philo->start_sem = table->start_sem;
 	philo->philo_sem = sem_open(PHILO_SEM, O_CREAT, 0644, 1);
 	if (philo->philo_sem == SEM_FAILED)
 		ft_error_exit("Erreur lors de la creation de la semaphore du philo\n");
