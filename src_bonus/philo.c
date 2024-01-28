@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:03 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 14:22:16 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/28 21:27:47 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	ft_philo(t_table *table)
 	ft_sem_init(table);
 	table->children = children;
 	sem_wait(table->sync_sem);
-	table->children = children;
 	ft_create_process(table);
 	i = -1;
 	while (++i < (table->philo_nb * 2))
@@ -40,11 +39,9 @@ void	*ft_meal_checker(void *data)
 {
 	t_table	*table;
 	int		status;
-	int		count;
 	int		i;
 
 	table = (t_table *)data;
-	count = 0;
 	i = -1;
 	while (++i < table->philo_nb)
 	{

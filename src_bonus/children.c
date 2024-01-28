@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   children.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:40 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 14:22:28 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/28 21:32:51 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_routine(void *data)
 	philo = (t_philo *)data;
 	sem_post(philo->sync_sem);
 	sem_wait(philo->start_sem);
-	ft_set_int(philo->philo_sem, &philo->thread_rdy, 1);
+  philo->start_time = ft_get_time(MILLISECOND);
 	ft_set_long(philo->philo_sem, &philo->last_meal, ft_get_time(MILLISECOND));
 	ft_starting_desynchro(philo);
 	while (!philo->end_simulation)

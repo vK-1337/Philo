@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:00:17 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 12:45:10 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/28 21:34:47 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,7 @@ void	ft_eat(t_philo *philo)
 	if (ft_get_int(philo->philo_sem, &philo->end_simulation))
 		return ;
 	sem_wait(philo->forks);
-	ft_write(TAKE_FIRST_FORK, philo);
-	ft_write(TAKE_SECOND_FORK, philo);
+	ft_write(TOOK_FORKS, philo);
 	ft_write(EATING, philo);
 	ft_set_long(philo->philo_sem, &philo->last_meal, ft_get_time(MILLISECOND));
 	ft_sleep(philo->t_to_eat, philo);
@@ -82,8 +81,11 @@ void	ft_write(t_states status, t_philo *philo)
 	elapsed_time = ft_get_time(MILLISECOND) - philo->start_time;
 	if (ft_get_int(philo->philo_sem, &philo->end_simulation))
 		return ;
-	else if (status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
+	else if (status == TOOK_FORKS)
+  {
 		printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
+    printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
+  }
 	else if (status == EATING)
 		printf("%ld %d is eating\n", elapsed_time, philo->id);
 	else if (status == SLEEPING)

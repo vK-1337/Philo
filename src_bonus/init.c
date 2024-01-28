@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:27:28 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 10:11:59 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/28 21:26:48 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_sem_init(t_table *table)
 	table->kill_them_all = sem_open(KILL_THEM_ALL, O_CREAT, 0644, 0);
 	if (table->kill_them_all == SEM_FAILED)
 		ft_error_exit("Erreur lors de la création du sémaphore kill_them_all\n");
-	table->start_sem = sem_open(START, O_CREAT, 0644, 1);
+	table->start_sem = sem_open(START, O_CREAT, 0644, 0);
 	if (table->sync_sem == SEM_FAILED)
 		ft_error_exit("Erreur lors de la création du sémaphore start\n");
 }

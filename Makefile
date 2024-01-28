@@ -3,6 +3,11 @@ SRCS = src/parsing.c \
 			src/parsing_utils.c \
 			src/philo.c \
 			src/philo_utils.c \
+			src/actions.c \
+			src/init.c \
+			src/getters.c \
+			src/setters.c \
+			src/threads.c \
 
 BONUS_SRCS = src_bonus/main.c \
 						src_bonus/actions.c \

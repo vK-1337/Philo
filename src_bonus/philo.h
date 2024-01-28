@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:12:10 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 10:41:37 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/28 21:34:27 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,7 @@ typedef enum e_states
 	EATING,
 	SLEEPING,
 	DEAD,
-	TAKE_FIRST_FORK,
-	TAKE_SECOND_FORK,
+	TOOK_FORKS,
 	DIED
 }			t_states;
 
