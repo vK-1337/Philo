@@ -6,7 +6,7 @@
 /*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:00:17 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 21:34:47 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/28 21:39:25 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	ft_write(t_states status, t_philo *philo)
   {
 		printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
     printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
+		printf("%ld %d is eating\n", elapsed_time, philo->id);
   }
 	else if (status == EATING)
 		printf("%ld %d is eating\n", elapsed_time, philo->id);

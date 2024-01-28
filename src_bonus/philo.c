@@ -6,7 +6,7 @@
 /*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:03 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 21:27:47 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/28 21:56:19 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ void	ft_philo(t_table *table)
 	sem_wait(table->sync_sem);
 	ft_create_process(table);
 	i = -1;
-	while (++i < (table->philo_nb * 2))
+	while (++i < (table->philo_nb))
 		sem_wait(table->sync_sem);
 	i = -1;
-	while (++i < table->philo_nb * 2)
+	while (++i < table->philo_nb)
 		sem_post(table->start_sem);
 	pthread_create(&meal_checker, NULL, ft_meal_checker, table);
 	sem_wait(table->kill_them_all);

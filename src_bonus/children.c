@@ -6,7 +6,7 @@
 /*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:40 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 21:32:51 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/28 22:02:00 by vk               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	*ft_reaper(void *data)
 
 	philo = (t_philo *)data;
 	sem_post(philo->sync_sem);
-	sem_wait(philo->start_sem);
 	ft_sleep(5000, philo);
 	while (1)
 	{
@@ -77,7 +76,10 @@ void	ft_create_process(t_table *table)
 			exit(0);
 		}
 		else
+    {
 			table->children[i] = pid;
+      usleep(200);
+    }
 	}
 }
 
