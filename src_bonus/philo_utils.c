@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:14:38 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 12:49:53 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/29 20:38:59 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,8 @@ long	ft_get_time(t_time_code time_code)
 
 void	ft_starting_desynchro(t_philo *philo)
 {
-	if (philo->philo_nb % 2 == 0)
-	{
-		if (philo->id % 2 == 0)
-			ft_sleep(1e4, philo);
-	}
-	else
-	{
-		if (philo->id % 2)
-			ft_think(philo, 1);
-	}
+  if (philo->id % 2 == 0)
+    ft_sleep(2e4, philo);
 }
 
 void	ft_clean_exit(t_table *table)

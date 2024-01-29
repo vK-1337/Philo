@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:40 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 19:33:19 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/29 20:52:54 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@ void	ft_routine(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	sem_post(philo->sync_sem);
-	sem_wait(philo->start_sem);
+	// sem_post(philo->sync_sem);
+	// sem_wait(philo->start_sem);
 	ft_set_long(philo->philo_sem, &philo->last_meal, ft_get_time(MILLISECOND));
+  // ft_starting_desynchro(philo);
 	while (!philo->end_simulation)
 	{
 		ft_eat(philo);
@@ -38,8 +39,8 @@ void	*ft_reaper(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	sem_post(philo->sync_sem);
-	sem_wait(philo->start_sem);
+	// sem_post(philo->sync_sem);
+	// sem_wait(philo->start_sem);
 	ft_sleep(5000, philo);
 	while (1)
 	{
