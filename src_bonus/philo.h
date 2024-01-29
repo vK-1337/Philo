@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:12:10 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 21:34:27 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/29 19:27:10 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef enum e_states
 	EATING,
 	SLEEPING,
 	DEAD,
-	TOOK_FORKS,
+	TAKE_FORK,
 	DIED
 }			t_states;
 
@@ -95,6 +95,7 @@ typedef enum e_time_code
 
 // MAIN //
 void		ft_philo(t_table *table);
+void		ft_solo_philo(t_table *table);
 
 // DINNER //
 void		ft_routine(void *data);

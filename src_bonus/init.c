@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:27:28 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 21:26:48 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/29 19:32:23 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_sem_init(t_table *table)
 	table->micro = sem_open("print_semaphore", O_CREAT, 0644, 1);
 	if (table->micro == SEM_FAILED)
 		ft_error_exit("Erreur lors de la création du sémaphore micro\n");
-	table->forks = sem_open(FORKS, O_CREAT, 0644, table->philo_nb / 2);
+	table->forks = sem_open(FORKS, O_CREAT, 0644, table->philo_nb);
 	if (table->forks == SEM_FAILED)
 		ft_error_exit("Erreur lors de la création du sémaphore forks\n");
 	table->sync_sem = sem_open(SYNC, O_CREAT, 0644, 1);

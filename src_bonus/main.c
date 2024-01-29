@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:13:21 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 11:02:58 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/29 19:29:39 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ int	main(int ac, char **av)
 		ft_error_exit("Wrong number of args");
 	else
 		ft_parse_input(av, &table);
-	ft_philo(&table);
+	if (table.philo_nb == 1)
+		ft_solo_philo(&table);
+	else
+		ft_philo(&table);
 	return (0);
 }
-// ! NEED TO HANDLE THE SOLO PHILO CASE
-// ! NEED TO HANDLE ERRORS CREATING THREADS
-// ! JUST LET THE FIRST HALF EAT AND THEN SEM POST IN EACH LOOP SO WHEN FIRST FINISHED EATING, FIRST OF 2ND HALF CAN EAT

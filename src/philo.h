@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 11:07:29 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 21:25:23 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/29 19:27:55 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,6 @@ int						all_threads_running(t_mtx *mutex, int *threads,
 void					ft_finish_dinner(t_table *table);
 void					ft_starting_desynchro(t_philo *philo);
 int						ft_all_ate(t_table *table);
-int ft_philo_dead(t_philo *philo);
+int						ft_philo_dead(t_philo *philo);
 
 #endif

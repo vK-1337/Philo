@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:00:17 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 11:56:06 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/29 19:29:23 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,19 @@ void	ft_eat(t_philo *philo)
 	if (ft_get_int(philo->philo_sem, &philo->end_simulation))
 		return ;
 	sem_wait(philo->forks);
-	ft_write(TOOK_FORKS, philo);
-	// ft_write(EATING, philo);
+	ft_write(TAKE_FORK, philo);
+	sem_wait(philo->forks);
+	ft_write(TAKE_FORK, philo);
 	ft_set_long(philo->philo_sem, &philo->last_meal, ft_get_time(MILLISECOND));
+	ft_write(EATING, philo);
 	ft_sleep(philo->t_to_eat, philo);
+	sem_post(philo->forks);
+	sem_post(philo->forks);
 	philo->meal_counter++;
 	if (ft_get_int(philo->philo_sem, &philo->end_simulation))
 		return ;
 	if (philo->max_meals > 0 && philo->meal_counter == philo->max_meals)
 		ft_set_int(philo->philo_sem, &philo->full, 1);
-	sem_post(philo->forks);
 }
 
 void	ft_write(t_states status, t_philo *philo)
@@ -77,16 +80,12 @@ void	ft_write(t_states status, t_philo *philo)
 
 	if (philo->full || ft_get_int(philo->philo_sem, &philo->end_simulation))
 		return ;
-	// sem_wait(philo->micro);
+	sem_wait(philo->micro);
 	elapsed_time = ft_get_time(MILLISECOND) - philo->start_time;
 	if (ft_get_int(philo->philo_sem, &philo->end_simulation))
 		return ;
-	else if (status == TOOK_FORKS)
-  {
+	else if (status == TAKE_FORK)
 		printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
-    printf("%ld %d has taken a fork\n", elapsed_time, philo->id);
-		printf("%ld %d is eating\n", elapsed_time, philo->id);
-  }
 	else if (status == EATING)
 		printf("%ld %d is eating\n", elapsed_time, philo->id);
 	else if (status == SLEEPING)
@@ -95,8 +94,8 @@ void	ft_write(t_states status, t_philo *philo)
 		printf("%ld %d is thinking\n", elapsed_time, philo->id);
 	else if (status == DIED)
 		printf("%ld %d died\n", elapsed_time, philo->id);
-	// if (status != DIED)
-	// 	sem_post(philo->micro);
+	if (status != DIED)
+		sem_post(philo->micro);
 }
 
 void	ft_kill_them_all(t_table *table)
