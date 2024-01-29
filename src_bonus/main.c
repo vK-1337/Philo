@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:13:21 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 14:14:54 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/29 11:02:58 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,3 +25,4 @@ int	main(int ac, char **av)
 }
 // ! NEED TO HANDLE THE SOLO PHILO CASE
 // ! NEED TO HANDLE ERRORS CREATING THREADS
+// ! JUST LET THE FIRST HALF EAT AND THEN SEM POST IN EACH LOOP SO WHEN FIRST FINISHED EATING, FIRST OF 2ND HALF CAN EAT

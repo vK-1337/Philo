@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   children.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:40 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 22:02:00 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/29 14:12:49 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,14 @@ void	ft_routine(void *data)
 	philo = (t_philo *)data;
 	sem_post(philo->sync_sem);
 	sem_wait(philo->start_sem);
-  philo->start_time = ft_get_time(MILLISECOND);
 	ft_set_long(philo->philo_sem, &philo->last_meal, ft_get_time(MILLISECOND));
-	ft_starting_desynchro(philo);
 	while (!philo->end_simulation)
 	{
 		ft_eat(philo);
 		if (ft_get_int(philo->philo_sem, &philo->full))
 			return ;
 		ft_write(SLEEPING, philo);
+    sem_post(philo->start_sem);
 		ft_sleep(philo->t_to_sleep, philo);
 		ft_think(philo, 0);
 	}
@@ -40,6 +39,7 @@ void	*ft_reaper(void *data)
 
 	philo = (t_philo *)data;
 	sem_post(philo->sync_sem);
+  sem_wait(philo->start_sem);
 	ft_sleep(5000, philo);
 	while (1)
 	{
@@ -63,7 +63,7 @@ void	ft_create_process(t_table *table)
 	int	pid;
 
 	i = -1;
-	table->start_time = ft_get_time(MILLISECOND);
+  table->start_time = ft_get_time(MILLISECOND);
 	while (++i < table->philo_nb)
 	{
 		pid = fork();
@@ -78,7 +78,7 @@ void	ft_create_process(t_table *table)
 		else
     {
 			table->children[i] = pid;
-      usleep(200);
+      usleep(500);
     }
 	}
 }
