@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:12:10 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/30 16:08:20 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/30 16:14:02 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,9 @@ long		ft_atol(const char *str);
 int			ft_is_space(const char c);
 int			ft_is_digit(const char c);
 void		ft_clean_exit(t_table *table);
-void		ft_error_exit(const char *error);
 long		ft_get_time(t_time_code time_code);
-void		ft_starting_desynchro(t_philo *philo);
 const char	*ft_valid_input(const char *str);
+void		ft_starting_desynchro(t_philo *philo);
 
 // INIT //
 void		ft_sem_init(t_table *table);
@@ -139,5 +138,6 @@ void		ft_think(t_philo *philo, int before_simulation);
 
 // ERRORS HANDLE //
 void		ft_thread_error_handle(int error);
+void		ft_error_exit(const char *error);
 
 #endif
