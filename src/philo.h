@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 11:07:29 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 19:27:55 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/30 16:06:30 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,46 +82,57 @@ typedef enum e_states
 	DIED
 }						t_states;
 
-//       PARSING      //
-
+//       MAIN FUNCTION      //
 void					ft_philo(t_table *table);
-void					ft_parse_input(t_table *table, char **av);
 
 //     PARSING UTILS     //
-void					ft_error_exit(const char *error);
-const char				*ft_valid_input(const char *str);
-int						ft_strlen(char *str);
+void					ft_parse_input(t_table *table, char **av);
 int						ft_is_space(const char c);
 int						ft_is_digit(const char c);
+const char				*ft_valid_input(const char *str);
+int						ft_strlen(char *str);
 long					ft_atol(const char *str);
-void					ft_start_dinner(t_table *table);
-void					*ft_dinner(void *data);
+
+//      ACTIONS       //
 void					ft_write(t_states status, t_philo *philo);
 void					ft_eat(t_philo *philo);
-void					ft_wait_all_threads(t_table *table);
-int						ft_get_int(t_mtx *mtx, int *value);
-int						simulation_finished(t_table *table);
-long					get_long(t_mtx *mtx, long *value);
-void					ft_data_init(t_table *table);
-void					ft_philo_init(t_table *table);
-void					set_long(t_mtx *mtx, long *dest, long value);
-void					set_int(t_mtx *mtx, int *dest, int value);
-long					ft_get_time(t_time_code time_code);
 void					ft_sleep(long usec, t_table *table);
 void					ft_think(t_philo *philo, int before_simulation);
+
+//      INIT       //
+void					ft_data_init(t_table *table);
+void					ft_philo_init(t_table *table);
+void					*ft_safe_malloc(size_t bytes);
+
+//      SETTERS       //
 void					ft_set_long(t_mtx *mtx, long *dest, long value);
 void					ft_set_int(t_mtx *mtx, int *dest, int value);
-void					*ft_safe_malloc(size_t bytes);
+void					ft_incr_int(t_mtx *mtx, int *dest);
+
+//      GETTERS     //
+long					get_long(t_mtx *mtx, long *value);
+int						ft_get_int(t_mtx *mtx, int *value);
+long					ft_get_time(t_time_code time_code);
 void					ft_assign_forks(t_philo *philo, t_fork *forks,
 							int philo_pos);
+
+//      THREADS     //
+void					ft_wait_all_threads(t_table *table);
 void					*ft_solo_dinner(void *data);
 void					*ft_reaper(void *data);
-void					ft_incr_int(t_mtx *mtx, int *dest);
 int						all_threads_running(t_mtx *mutex, int *threads,
 							int philo_nbr);
-void					ft_finish_dinner(t_table *table);
 void					ft_starting_desynchro(t_philo *philo);
-int						ft_all_ate(t_table *table);
 int						ft_philo_dead(t_philo *philo);
 
+//      DINNER UTILS     //
+void					ft_start_dinner(t_table *table);
+void					*ft_dinner(void *data);
+int						ft_all_ate(t_table *table);
+int						simulation_finished(t_table *table);
+void					ft_finish_dinner(t_table *table);
+
+// THREAD ERROR HANDLE //
+void					ft_thread_error_handle(int error);
+void					ft_error_exit(const char *error);
 #endif

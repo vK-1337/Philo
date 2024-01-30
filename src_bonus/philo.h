@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 11:12:10 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 19:27:10 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/30 16:08:20 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,5 +136,8 @@ void		*ft_meal_checker(void *data);
 void		ft_sleep(long usec, t_philo *philo);
 void		ft_write(t_states status, t_philo *philo);
 void		ft_think(t_philo *philo, int before_simulation);
+
+// ERRORS HANDLE //
+void		ft_thread_error_handle(int error);
 
 #endif

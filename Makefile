@@ -8,6 +8,7 @@ SRCS = src/parsing.c \
 			src/getters.c \
 			src/setters.c \
 			src/threads.c \
+			src/error.c \
 
 BONUS_SRCS = src_bonus/main.c \
 						src_bonus/actions.c \
@@ -19,6 +20,7 @@ BONUS_SRCS = src_bonus/main.c \
 						src_bonus/parsing_utils.c \
 						src_bonus/philo.c \
 						src_bonus/philo_utils.c \
+						src_bonus/error.c \
 
 OBJS = $(SRCS:.c=.o)
 

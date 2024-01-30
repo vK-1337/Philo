@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vk <vk@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 14:48:28 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/28 21:25:46 by vk               ###   ########.fr       */
+/*   Updated: 2024/01/30 16:06:16 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,16 @@ void	ft_start_dinner(t_table *table)
 	if (table->max_meals == 0)
 		return ;
 	else if (table->philo_nb == 1)
-		pthread_create(&table->philos[0].thread, NULL, ft_solo_dinner,
-			&table->philos[0]);
+		ft_thread_error_handle(pthread_create(&table->philos[0].thread, NULL,
+				ft_solo_dinner, &table->philos[0]));
 	else
 	{
 		while (++i < table->philo_nb)
-		{
-			pthread_create(&table->philos[i].thread, NULL, ft_dinner,
-				&table->philos[i]);
-		}
+			ft_thread_error_handle(pthread_create(&table->philos[i].thread,
+					NULL, ft_dinner, &table->philos[i]));
 	}
-	pthread_create(&table->reaper, NULL, ft_reaper, table);
+	ft_thread_error_handle(pthread_create(&table->reaper, NULL, ft_reaper,
+			table));
 	table->start_time = ft_get_time(MILLISECOND);
 	ft_set_int(&table->table_mtx, &table->all_ready, 1);
 	i = -1;

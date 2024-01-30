@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:03 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 20:54:38 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/30 15:53:26 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,20 @@
 
 void	ft_philo(t_table *table)
 {
-	// int			i;
+	int			i;
 	pid_t		children[200];
 	pthread_t	meal_checker;
+	int			error;
 
 	ft_sem_init(table);
 	table->children = children;
 	sem_wait(table->sync_sem);
 	ft_create_process(table);
-	// i = -1;
-	// while (++i < table->philo_nb * 2)
-	// 	sem_wait(table->sync_sem);
-	// i = -1;
-	// while (++i <= table->philo_nb / 2)
-		// sem_post(table->start_sem);
-  pthread_create(&meal_checker, NULL, ft_meal_checker, table);
+	i = -1;
+	while (++i <= table->philo_nb / 2)
+		sem_post(table->start_sem);
+	ft_thread_error_handle(pthread_create(&meal_checker, NULL, ft_meal_checker,
+			table));
 	sem_wait(table->kill_them_all);
 	ft_kill_them_all(table);
 	pthread_join(meal_checker, NULL);
@@ -55,8 +54,8 @@ void	*ft_meal_checker(void *data)
 
 void	ft_solo_philo(t_table *table)
 {
-	pid_t		children[1];
-	int			i;
+	pid_t	children[1];
+	int		i;
 
 	ft_sem_init(table);
 	table->children = children;
@@ -65,7 +64,7 @@ void	ft_solo_philo(t_table *table)
 	while (++i < table->philo_nb * 2)
 		sem_wait(table->sync_sem);
 	sem_post(table->start_sem);
-  sem_post(table->start_sem);
+	sem_post(table->start_sem);
 	sem_wait(table->kill_them_all);
 	ft_kill_them_all(table);
 	ft_clean_exit(table);

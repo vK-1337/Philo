@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:00:17 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 21:00:20 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/30 15:15:31 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ void	ft_eat(t_philo *philo)
 {
 	if (ft_get_int(philo->philo_sem, &philo->end_simulation))
 		return ;
-	sem_wait(philo->forks);
 	ft_write(TAKE_FORK, philo);
 	sem_wait(philo->forks);
 	ft_write(TAKE_FORK, philo);
+	sem_wait(philo->forks);
 	ft_write(EATING, philo);
 	ft_sleep(philo->t_to_eat, philo);
 	sem_post(philo->forks);

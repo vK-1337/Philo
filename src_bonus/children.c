@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 10:01:40 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 20:52:54 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/30 15:50:36 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ void	ft_routine(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	// sem_post(philo->sync_sem);
-	// sem_wait(philo->start_sem);
+	sem_post(philo->sync_sem);
+	sem_wait(philo->start_sem);
 	ft_set_long(philo->philo_sem, &philo->last_meal, ft_get_time(MILLISECOND));
-  // ft_starting_desynchro(philo);
+	ft_starting_desynchro(philo);
 	while (!philo->end_simulation)
 	{
 		ft_eat(philo);
@@ -39,8 +39,7 @@ void	*ft_reaper(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	// sem_post(philo->sync_sem);
-	// sem_wait(philo->start_sem);
+	sem_wait(philo->start_sem);
 	ft_sleep(5000, philo);
 	while (1)
 	{
@@ -91,9 +90,8 @@ void	ft_dinner(t_table *table)
 	int			error;
 
 	ft_init_philo(&philo, table);
-	error = pthread_create(&reaper_thread, NULL, ft_reaper, &philo);
-	if (error)
-		ft_error_exit("Error during thread creation");
+	ft_thread_error_handle(pthread_create(&reaper_thread, NULL, ft_reaper,
+			&philo));
 	pthread_detach(reaper_thread);
 	ft_routine(&philo);
 	sem_close(philo.philo_sem);

@@ -6,7 +6,7 @@
 /*   By: vda-conc <vda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 14:27:28 by vda-conc          #+#    #+#             */
-/*   Updated: 2024/01/29 19:32:23 by vda-conc         ###   ########.fr       */
+/*   Updated: 2024/01/30 16:08:12 by vda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	ft_init_philo(t_philo *philo, t_table *table)
 	philo->philo_nb = table->philo_nb;
 	philo->end_simulation = 0;
 	philo->max_meals = table->max_meals;
+	philo->meal_counter = 0;
 	philo->full = 0;
 	philo->id = table->philo_id;
 	philo->start_sem = table->start_sem;
